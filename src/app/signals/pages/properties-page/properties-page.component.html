@@ -29,5 +29,7 @@
     <!-- data user -->
     <pre>{{ user() | json}}</pre>
     <div>{{fullName()}}</div>
+    <div>Counter: {{counter()}}</div>
+    <button class="btn btn-primary" (click)="increaseBy(+1)">+1</button>
   </div>
 </div>

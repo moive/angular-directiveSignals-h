@@ -1,11 +1,11 @@
-import { Component, computed, signal } from '@angular/core';
+import { Component, OnInit, computed, effect, signal } from '@angular/core';
 import { User } from '../../interfaces/user-request.interface';
 
 @Component({
   templateUrl: './properties-page.component.html',
   styleUrls: ['./properties-page.component.scss'],
 })
-export class PropertiesPageComponent {
+export class PropertiesPageComponent implements OnInit {
   public fullName = computed(
     () => `${this.user().first_name} ${this.user().last_name}`
   );
@@ -16,6 +16,23 @@ export class PropertiesPageComponent {
     last_name: 'Bluth',
     avatar: 'https://reqres.in/img/faces/1-image.jpg',
   });
+
+  public counter = signal(10);
+
+  public userChangedEffect = effect(() => {
+    console.log(`${this.user().first_name} - ${this.counter()}`);
+  });
+
+  ngOnInit(): void {
+    const intervalId = setInterval(() => {
+      this.counter.update((current) => current + 1);
+
+      if (this.counter() == 15) {
+        this.userChangedEffect.destroy();
+        clearInterval(intervalId);
+      }
+    }, 1000);
+  }
 
   onFieldUpdated(field: keyof User, value: string) {
     // first way
@@ -52,5 +69,9 @@ export class PropertiesPageComponent {
 
       return current;
     });
+  }
+
+  increaseBy(value: number) {
+    this.counter.update((current) => current + value);
   }
 }
